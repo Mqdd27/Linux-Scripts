@@ -1,0 +1,2 @@
+#!/bin/bash
+mpv --no-cache --untimed --profile=low-latency /dev/video0 & disown > /dev/null
