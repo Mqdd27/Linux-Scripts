@@ -1,2 +1,8 @@
 #!/bin/bash
-mpv --no-cache --untimed --profile=low-latency /dev/video0 & disown > /dev/null
+# mpv --no-cache --untimed --profile=low-latency --vf=fps=25 /dev/video0 & disown > /dev/null
+# mpv --no-cache --no-audio --untimed --profile=low-latency --input-ipc-server=/dev/null /dev/video0 --demuxer-lavf-format=video4linux2 --vf=scale=640:480 & disown 
+
+mpv --no-cache --no-audio --untimed --profile=low-latency \
+    --input-ipc-server=/dev/null --demuxer-lavf-format=video4linux2 \
+    --vf=scale=640:480 /dev/video0 > /dev/null 2>&1 & disown
+
