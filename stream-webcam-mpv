@@ -1,0 +1,6 @@
+#!/bin/bash
+
+v4l2-ctl --set-fmt-video=width=640,height=480,pixelformat=YUYV
+v4l2-ctl --set-parm=30
+
+mpv --no-cache --no-audio --untimed --profile=low-latency --no-keepaspect --geometry=640x480 /dev/video0 > /dev/null 2>&1 & disown
