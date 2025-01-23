@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Loop infinite untuk memonitor baterai
+while true; do
+    for bat in /sys/class/power_supply/BAT?; do
+        if [ -d "$bat" ]; then
+            capacity=$(cat "$bat/capacity")
+            status=$(cat "$bat/status")
+
+            # Baterai lemah
+            if [[ "$status" == "Discharging" && "$capacity" == 20 ]]; then
+                notify-send "🪫 Battery Low" "Battery is at ${capacity}%. Please charge now." --urgency=critical
+                sleep 180
+
+            # Baterai kritis
+            elif [[ "$status" == "Discharging" && "$capacity" == 5 ]]; then
+                notify-send "🪫 Battery Critical" "Battery is at ${capacity}%. It will die soon!" --urgency=critical
+                sleep 240
+
+            # Baterai hampir penuh
+            elif [[ "$status" == "Charging" && "$capacity" == 95 ]]; then
+                notify-send "🔋 Battery Almost Full" "Battery is at ${capacity}%. You can unplug the charger." --urgency=normal
+                sleep 300
+	    fi
+        fi
+    done
+done
