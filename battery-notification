@@ -1,5 +1,7 @@
 #!/bin/sh
 
+SOUND_FILE="/home/kimp/.local/share/sounds/bell-notification.wav"
+
 # Loop infinite untuk memonitor baterai
 while true; do
     for bat in /sys/class/power_supply/BAT?; do
@@ -10,16 +12,19 @@ while true; do
             # Baterai lemah
             if [[ "$status" == "Discharging" && "$capacity" == 20 ]]; then
                 notify-send "🪫 Battery Low" "Battery is at ${capacity}%. Please charge now." --urgency=critical
+		aplay "$SOUND_FILE" &
                 sleep 180
 
             # Baterai kritis
             elif [[ "$status" == "Discharging" && "$capacity" == 5 ]]; then
                 notify-send "🪫 Battery Critical" "Battery is at ${capacity}%. It will die soon!" --urgency=critical
+		aplay "$SOUND_FILE" &
                 sleep 240
 
             # Baterai hampir penuh
             elif [[ "$status" == "Charging" && "$capacity" == 95 ]]; then
                 notify-send "🔋 Battery Almost Full" "Battery is at ${capacity}%. You can unplug the charger." --urgency=normal
+		aplay "$SOUND_FILE" &
                 sleep 300
 	    fi
         fi
