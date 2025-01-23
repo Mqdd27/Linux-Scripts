@@ -1,2 +1,0 @@
-#!/bin/sh
-exec /usr/bin/flatpak 'run' '--command=/app/bin/edge' 'com.microsoft.Edge' '--profile-directory=Default' '--app-id=hnpfjngllnobngcgfapefoaidbinmjnm' '--app-url=https://web.whatsapp.com/'
