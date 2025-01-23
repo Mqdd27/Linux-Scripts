@@ -2,6 +2,16 @@
 
 SOUND_FILE="/home/kimp/.local/share/sounds/bell-notification.wav"
 
+LOCKFILE="/tmp/battery-notify.lock"
+
+if [ -e "$LOCKFILE" ]; then
+    exit 0
+fi
+
+touch "$LOCKFILE"
+
+trap "rm -f $LOCKFILE" EXIT
+
 # Loop infinite untuk memonitor baterai
 while true; do
     for bat in /sys/class/power_supply/BAT?; do
