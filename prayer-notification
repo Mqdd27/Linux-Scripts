@@ -1,0 +1,55 @@
+#!/bin/sh
+
+LOCKFILE="/tmp/prayer-notify.lock"
+
+if [ -e "$LOCKFILE" ]; then
+    exit 0
+fi
+
+touch "$LOCKFILE"
+
+trap "rm -f $LOCKFILE" EXIT
+
+# Lokasi dan timezone
+LOKASI="Jakarta"
+TIMEZONE="Asia/Jakarta"
+
+# Mendapatkan waktu sholat dari API (misalnya API Aladhan)
+URL="https://api.aladhan.com/v1/timingsByCity?city=$LOKASI&country=Indonesia&method=2"
+DATA=$(curl -s $URL)
+
+# Mendapatkan waktu sholat
+SUBUH=$(echo $DATA | jq -r '.data.timings.Fajr')
+DZUHUR=$(echo $DATA | jq -r '.data.timings.Dhuhr')
+ASHAR=$(echo $DATA | jq -r '.data.timings.Asr')
+MAGHRIB=$(echo $DATA | jq -r '.data.timings.Maghrib')
+ISYA=$(echo $DATA | jq -r '.data.timings.Isha')
+
+# Fungsi untuk mengatur notifikasi
+tampilkan_notifikasi() {
+  WAKTU=$1
+  PESAN=$2
+
+  # Menampilkan notifikasi
+  notify-send "Waktu Sholat" "$PESAN ($WAKTU)"
+}
+
+# Menampilkan notifikasi berdasarkan jadwal
+while true; do
+  SEKARANG=$(date +"%H:%M")
+
+  if [[ "$SEKARANG" == "$SUBUH" ]]; then
+    tampilkan_notifikasi "$SUBUH" "Sudah masuk waktu Subuh"
+  elif [[ "$SEKARANG" == "$DZUHUR" ]]; then
+    tampilkan_notifikasi "$DZUHUR" "Sudah masuk waktu Dzuhur"
+  elif [[ "$SEKARANG" == "$ASHAR" ]]; then
+    tampilkan_notifikasi "$ASHAR" "Sudah masuk waktu Ashar"
+  elif [[ "$SEKARANG" == "$MAGHRIB" ]]; then
+    tampilkan_notifikasi "$MAGHRIB" "Sudah masuk waktu Maghrib"
+  elif [[ "$SEKARANG" == "$ISYA" ]]; then
+    tampilkan_notifikasi "$ISYA" "Sudah masuk waktu Isya"
+  fi
+
+  sleep 60
+done
+
