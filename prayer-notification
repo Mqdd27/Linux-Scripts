@@ -10,6 +10,9 @@ touch "$LOCKFILE"
 
 trap "rm -f $LOCKFILE" EXIT
 
+# Load Notification Sound
+SOUND_FILE="/home/kimp/.local/share/sounds/prayer-notification.wav"
+
 # Lokasi dan timezone
 LOKASI="Jakarta"
 TIMEZONE="Asia/Jakarta"
@@ -31,7 +34,8 @@ tampilkan_notifikasi() {
   PESAN=$2
 
   # Menampilkan notifikasi
-  notify-send "Waktu Sholat" "$PESAN ($WAKTU)"
+  notify-send --urgency=normal "Waktu Sholat" "$PESAN ($WAKTU)";
+  aplay "$SOUND_FILE"
 }
 
 # Menampilkan notifikasi berdasarkan jadwal
@@ -52,4 +56,3 @@ while true; do
 
   sleep 60
 done
-
